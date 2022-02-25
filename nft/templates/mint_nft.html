@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+
+{% block body%}
+    <div class="form">
+        {% if message %}
+            <div>{{ message }}</div>
+        {% endif %}
+        <form name= "form" action="{% url 'create_nft' %}" method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input class="btn2" type="submit">
+        </form>
+    </div>
+
+
+{% endblock %}

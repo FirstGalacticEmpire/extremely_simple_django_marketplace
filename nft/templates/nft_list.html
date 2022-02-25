@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+{% block title %} Auction listings{% endblock title %}
+{% block body %}
+    <h2>Available NFTs</h2>
+    <div class="grid">
+        {% for list in listings %}
+            <div class="product_box" id="list_container">
+                <a class="link" style="color:black; text-decoration:none;" href='{% url 'item_details' list.id %}'>
+                    <table>
+                        <tr>
+                            <td class="mr-10">
+                                <div class="mx-3"><img id="list_img"
+                                                       src={{ list.image }}></div>
+                                <div class="price">
+                                    <p>${{ list.price }}.00 </p>
+                                </div>
+                                <div>
+                                    <h3 class="title"> {{ list.title }} </h3>
+                                    <p class="description">{{ list.description }}</p>
+                                    <p class="description"> Stworzony dnia: {{ list.date_created }} </p>
+                                </div>
+                            </td>
+
+
+                        </tr>
+                    </table>
+                </a>
+            </div>
+
+        {% endfor %}
+    </div>
+
+
+    {# https://simpleisbetterthancomplex.com/tutorial/2016/08/03/how-to-paginate-with-django.html#}
+
+    {% if listings.has_other_pages %}
+        <ul class="pagination">
+            {% if listings.has_previous %}
+                <li><a href="?page={{ listings.previous_page_number }}">&laquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in listings.paginator.page_range %}
+                {% if listings.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% else %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if listings.has_next %}
+                <li><a href="?page={{ listings.next_page_number }}">&raquo;</a></li>
+            {% else %}
+                <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    {% endif %}
+
+
+
+
+
+{% endblock %}

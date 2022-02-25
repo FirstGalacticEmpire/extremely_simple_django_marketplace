@@ -1,0 +1,74 @@
+{% extends 'layout.html' %}
+{% block title %}List Item{% endblock title %}
+{% block body %}
+    <div class="mb-5" style="margin-left: 10px;">
+        <div class="panel">
+            <div class="sub-panel">
+                <img class="image" src={{ object.image }}>
+            </div>
+            <div class="sub-panel info">
+                <h2>{{ object.title }}</h2>
+                <hr>
+                <p class="font-weight-bold d-inline mb-5">Date created: </p><span>{{ object.date_created }}</span>
+                <p class="description"></p> <span>{{ object.description }}</span><br>
+                <p class="font-weight-bold d-inline mb-5">Price: </p><span>${{ object.price }}</span><br>
+                {% if object.bid_user %}
+                    <p class="font-weight-bold d-inline mb-5">Highest bid by: </p><br>
+                    <span class="bid-user">{{ object.bid_user }}</span><br>
+                    <p class="font-weight-bold d-inline mb-5">Bid price: </p><br>
+                    <span class="bid">${{ object.bid_price }}</span>
+                {% else %}
+                    <p class="font-weight-bold d-inline mb-5">Starting bid: </p><br>
+                    <span class="bid">${{ object.starting_bid_price }}</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div>
+        {% if user.is_authenticated %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            <hr>
+
+            <div class="my-5 ml-3">
+                {% if message %}
+                    <div class="mb-3" style="color:red;">{{ message }}</div>
+                {% endif %}
+
+                {% if bid_message %}
+                    <div class="mb-3" style="color:green;">{{ bid_message }}</div>
+                {% endif %}
+
+                <div class="grid">
+                    {% if object.closed == True %}
+                        <p style="color:red;">Auction closed</p>
+                    {% else %}
+                        <form action="/all_nfts/{{ object.id }}/" method="POST">
+                            {% csrf_token %}
+                            {{ bform.as_p }}
+                            <input type="hidden" value>
+                            <button class="btn2 btn-success">Bid</button>
+                        </form>
+                        {% if object.creator == object.creator %}
+                            <form action="/close_auction/{{ object.id }}/" method="POST">
+                                {% csrf_token %}
+                                <button class="btn2 btn-success btn-down">Close Auction</button>
+                            </form>
+                        {% endif %}
+                    {% endif %}
+                    <form action="/delete_auction/{{ object.id }}/" method="POST">
+                        {% csrf_token %}
+                        <button class="btn2 btn-success btn-down">Delete auction</button>
+                    </form>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
